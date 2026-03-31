@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLTIMEUPA — AI Partnership Ecosystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+:root{
+  --bg:#03030c;
+  --bg2:#08081a;
+  --cyan:#00d4ff;
+  --purple:#7b2fff;
+  --green:#00ff9d;
+  --orange:#ff6b35;
+  --gold:#f7c948;
+  --pink:#ff3d8a;
+  --text:#e2e8f8;
+  --muted:rgba(226,232,248,0.5);
+  --glass:rgba(255,255,255,0.04);
+  --border:rgba(0,212,255,0.18);
+}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--purple);}
+
+/* BG */
+.bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:64px 64px;animation:gridmove 25s linear infinite;}
+@keyframes gridmove{to{transform:translateY(64px);}}
+.orb{position:absolute;border-radius:50%;filter:blur(130px);}
+.o1{width:700px;height:700px;background:var(--cyan);top:-250px;left:-200px;opacity:0.07;animation:pa 9s ease-in-out infinite alternate;}
+.o2{width:600px;height:600px;background:var(--purple);bottom:-150px;right:-150px;opacity:0.09;animation:pa 11s ease-in-out infinite alternate-reverse;}
+.o3{width:350px;height:350px;background:var(--green);top:45%;left:40%;opacity:0.06;animation:pa 14s ease-in-out infinite alternate;}
+@keyframes pa{from{opacity:0.05;}to{opacity:0.13;}}
+
+/* TOP BAR */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;gap:24px;
+  padding:12px 48px;
+  background:rgba(3,3,12,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.tb-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tb-logo-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+}
+.tb-logo-text{font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tb-logo-sub{font-size:0.55rem;display:block;letter-spacing:0.2em;
+  color:var(--cyan);-webkit-text-fill-color:var(--cyan);}
+.tb-tagline{font-size:0.72rem;color:var(--muted);line-height:1.4;max-width:480px;flex:1;}
+.tb-cta{
+  margin-left:auto;padding:9px 22px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;color:#fff;font-family:'Orbitron',monospace;
+  font-size:0.63rem;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition:all 0.3s;white-space:nowrap;
+  box-shadow:0 0 30px rgba(0,212,255,0.3);
+}
+.tb-cta:hover{box-shadow:0 0 50px rgba(0,212,255,0.6);transform:translateY(-1px);}
+
+/* MAIN NAV */
+.mainnav{
+  position:fixed;top:61px;left:0;right:0;z-index:99;
+  display:flex;align-items:center;justify-content:center;gap:48px;
+  padding:10px 48px;
+  background:rgba(3,3,12,0.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.nav-item{
+  font-family:'Rajdhani',sans-serif;font-size:0.82rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);
+  text-decoration:none;cursor:pointer;transition:color 0.3s;
+  position:relative;padding-bottom:4px;
+}
+.nav-item.active{color:var(--cyan);}
+.nav-item.active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+}
+.nav-item:hover{color:var(--cyan);}
+.nav-search{
+  width:110px;height:26px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);outline:none;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  padding:0 10px;
+}
+
+/* HERO */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:60px;
+  padding:160px 80px 80px;
+}
+.hero-left{display:flex;flex-direction:column;gap:28px;}
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(1.6rem,3vw,2.7rem);font-weight:900;line-height:1.12;
+}
+.hero-title .hl{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-lines{display:flex;flex-direction:column;gap:10px;margin:4px 0;}
+.hl-bar{height:3px;border-radius:2px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-o{
+  padding:11px 22px;background:transparent;
+  font-family:'Orbitron',monospace;font-size:0.61rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition:all 0.3s;border:1px solid currentColor;
+}
+.btn-o.c{color:var(--cyan);}   .btn-o.c:hover{background:var(--cyan);color:var(--bg);}
+.btn-o.p{color:var(--purple);} .btn-o.p:hover{background:var(--purple);color:#fff;}
+.btn-o.g{color:var(--green);}  .btn-o.g:hover{background:var(--green);color:var(--bg);}
+
+/* FLOW GRAPH */
+.flow-graph{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;z-index:1;
+}
+.fg-node{
+  width:100%;max-width:360px;
+  padding:17px 22px;position:relative;cursor:pointer;
+  transition:all 0.35s cubic-bezier(0.23,1,0.32,1);
+  border:2px solid var(--fn-col);
+  background:var(--fn-bg);
+  box-shadow:0 0 22px var(--fn-glow),inset 0 1px 0 rgba(255,255,255,0.07);
+}
+.fg-node:hover{
+  transform:translateX(8px) scale(1.025);
+  box-shadow:0 0 50px var(--fn-glow),0 16px 50px rgba(0,0,0,0.4);
+}
+.fg-node::before{
+  content:'';position:absolute;top:0;left:0;width:4px;height:100%;
+  background:var(--fn-col);box-shadow:0 0 10px var(--fn-glow);
+}
+.fn-lbl{font-family:'JetBrains Mono',monospace;font-size:0.53rem;letter-spacing:0.3em;
+  color:var(--fn-col);text-transform:uppercase;margin-bottom:3px;opacity:0.75;}
+.fn-title{font-family:'Orbitron',monospace;font-size:0.92rem;font-weight:700;
+  color:var(--fn-col);text-shadow:0 0 20px var(--fn-glow);}
+.fn-sub{font-size:0.72rem;color:var(--muted);margin-top:3px;}
+.fn-core{
+  display:inline-block;margin-top:7px;
+  font-family:'JetBrains Mono',monospace;font-size:0.58rem;
+  padding:2px 10px;border:1px solid var(--fn-col);
+  background:rgba(0,0,0,0.3);color:var(--fn-col);letter-spacing:0.15em;
+}
+/* node colors */
+.fn-s{--fn-col:#9eafc8;--fn-bg:rgba(158,175,200,0.07);--fn-glow:rgba(158,175,200,0.14);}
+.fn-a{--fn-col:#00d4ff;--fn-bg:rgba(0,212,255,0.1);--fn-glow:rgba(0,212,255,0.22);}
+.fn-p{--fn-col:#b97aff;--fn-bg:rgba(123,47,255,0.12);--fn-glow:rgba(123,47,255,0.26);}
+.fn-v{--fn-col:#ff8a5b;--fn-bg:rgba(255,107,53,0.11);--fn-glow:rgba(255,107,53,0.24);}
+.fn-t{--fn-col:#00ff9d;--fn-bg:rgba(0,255,157,0.09);--fn-glow:rgba(0,255,157,0.22);}
+.fn-l{--fn-col:#f7c948;--fn-bg:rgba(247,201,72,0.09);--fn-glow:rgba(247,201,72,0.24);}
+
+/* connector */
+.fg-conn{display:flex;flex-direction:column;align-items:center;width:100%;max-width:360px;}
+.fg-line{width:2px;height:26px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--lf),var(--lt));}
+.fg-line::after{content:'';position:absolute;top:-100%;left:0;right:0;bottom:0;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,0.85),transparent);
+  animation:ff 1.8s linear infinite;}
+@keyframes ff{to{top:200%;}}
+.fg-arr{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:8px solid var(--lt);}
+
+/* SECTION */
+section{position:relative;z-index:1;}
+.sec-head{text-align:center;margin-bottom:52px;}
+.sec-tag{display:inline-block;padding:4px 18px;border:1px solid var(--border);background:var(--glass);
+  font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.3em;color:var(--cyan);text-transform:uppercase;}
+.sec-title{font-family:'Orbitron',monospace;font-size:clamp(1.3rem,2.5vw,2rem);font-weight:900;
+  background:linear-gradient(135deg,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:12px;}
+.sec-divider{display:flex;align-items:center;gap:14px;justify-content:center;}
+.sdl{height:1px;width:70px;background:linear-gradient(90deg,transparent,var(--cyan));}
+.sdl.r{background:linear-gradient(90deg,var(--cyan),transparent);}
+
+/* SERVICES */
+.services-sec{padding:100px 80px;
+  background:linear-gradient(180deg,transparent,rgba(8,8,26,0.96) 8%,rgba(8,8,26,0.96) 92%,transparent);}
+.svc-grid-r1{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1200px;margin:0 auto;}
+.svc-grid-r2{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:16px auto 0;}
+
+.svc-card{
+  padding:26px 20px;position:relative;overflow:hidden;cursor:pointer;
+  border:2px solid var(--sc-col);background:var(--sc-bg);
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  box-shadow:0 0 18px var(--sc-glow),inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.svc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--sc-col),transparent);}
+.svc-card:hover{transform:translateY(-7px);
+  box-shadow:0 22px 60px var(--sc-glow),0 0 0 1px var(--sc-col);background:var(--sc-bgh);}
+.svc-card:focus{outline:2px solid var(--sc-col);outline-offset:3px;}
+.sc-name{font-family:'Orbitron',monospace;font-size:0.8rem;font-weight:700;
+  color:var(--sc-col);text-shadow:0 0 14px var(--sc-glow);margin-bottom:4px;}
+.sc-name em{font-style:normal;font-family:'JetBrains Mono',monospace;font-size:0.62rem;
+  padding:1px 5px;margin-left:3px;border:1px solid var(--sc-col);vertical-align:middle;}
+.sc-desc{font-size:0.74rem;color:var(--muted);line-height:1.55;margin-top:8px;}
+.sc-num{position:absolute;bottom:10px;right:14px;font-family:'Orbitron',monospace;
+  font-size:2rem;font-weight:900;color:var(--sc-col);opacity:0.07;line-height:1;}
+.sc-core{display:inline-block;margin-top:10px;font-family:'JetBrains Mono',monospace;
+  font-size:0.58rem;padding:2px 10px;border:1px solid var(--sc-col);
+  background:rgba(0,0,0,0.3);color:var(--sc-col);letter-spacing:0.15em;}
+
+.sc1{--sc-col:#00d4ff;--sc-bg:rgba(0,212,255,0.07);--sc-bgh:rgba(0,212,255,0.13);--sc-glow:rgba(0,212,255,0.18);}
+.sc2{--sc-col:#b97aff;--sc-bg:rgba(123,47,255,0.08);--sc-bgh:rgba(123,47,255,0.15);--sc-glow:rgba(123,47,255,0.2);}
+.sc3{--sc-col:#00ff9d;--sc-bg:rgba(0,255,157,0.07);--sc-bgh:rgba(0,255,157,0.13);--sc-glow:rgba(0,255,157,0.18);}
+.sc4{--sc-col:#ff6b35;--sc-bg:rgba(255,107,53,0.07);--sc-bgh:rgba(255,107,53,0.13);--sc-glow:rgba(255,107,53,0.18);}
+.sc5{--sc-col:#f7c948;--sc-bg:rgba(247,201,72,0.07);--sc-bgh:rgba(247,201,72,0.13);--sc-glow:rgba(247,201,72,0.18);}
+.sc6{--sc-col:#ff3d8a;--sc-bg:rgba(255,61,138,0.07);--sc-bgh:rgba(255,61,138,0.13);--sc-glow:rgba(255,61,138,0.18);}
+.sc7{--sc-col:#f7c948;--sc-bg:rgba(247,201,72,0.06);--sc-bgh:rgba(247,201,72,0.14);--sc-glow:rgba(247,201,72,0.28);}
+
+/* REVENUE */
+.revenue-sec{padding:80px 80px;}
+.rev-row1{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1000px;margin:0 auto 24px;}
+.rev-row2{margin-top:24px;}
+.rev-card{
+  padding:28px 24px;
+  border:2px solid var(--rc-col);
+  background:var(--rc-bg);
+  backdrop-filter:blur(14px);
+  position:relative;overflow:hidden;
+  transition:all 0.35s cubic-bezier(0.23,1,0.32,1);
+  box-shadow:0 0 20px var(--rc-glow),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.rev-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--rc-col),transparent);}
+.rev-card:hover{transform:translateY(-5px);box-shadow:0 20px 55px var(--rc-glow),0 0 0 1px var(--rc-col);}
+.rvc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.rvc-icon{font-size:1.5rem;}
+.rvc-name{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;
+  color:var(--rc-col);text-shadow:0 0 14px var(--rc-glow);}
+.rvc-full{font-family:'Orbitron',monospace;font-size:0.72rem;font-weight:600;
+  color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-bottom:10px;}
+.rvc-desc{font-size:0.78rem;color:var(--muted);line-height:1.6;}
+.rvc1{--rc-col:#00d4ff;--rc-bg:rgba(0,212,255,0.08);--rc-glow:rgba(0,212,255,0.18);}
+.rvc2{--rc-col:#b97aff;--rc-bg:rgba(123,47,255,0.09);--rc-glow:rgba(123,47,255,0.2);}
+.rvc3{--rc-col:#00ff9d;--rc-bg:rgba(0,255,157,0.08);--rc-glow:rgba(0,255,157,0.18);}
+.rvc5{--rc-col:#f7c948;--rc-bg:rgba(247,201,72,0.08);--rc-glow:rgba(247,201,72,0.2);}
+
+/* OUTCOME SECTION */
+.outcome-sec{
+  max-width:1000px;margin:0 auto 24px;
+  border:2px solid rgba(255,107,53,0.35);
+  background:rgba(255,107,53,0.05);
+  backdrop-filter:blur(16px);
+  padding:36px 40px;
+  box-shadow:0 0 40px rgba(255,107,53,0.12),inset 0 1px 0 rgba(255,255,255,0.05);
+  position:relative;overflow:hidden;
+}
+.outcome-sec::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--orange),var(--gold),transparent);
+}
+.outcome-sec-head{margin-bottom:28px;}
+.outcome-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Orbitron',monospace;font-size:1rem;font-weight:800;
+  color:var(--orange);margin-bottom:10px;
+  text-shadow:0 0 20px rgba(255,107,53,0.5);
+}
+.outcome-sub{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+
+/* OUTCOME GRID */
+.outcome-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.outcome-card{padding:24px 20px;border:2px solid var(--oc-col);background:var(--oc-bg);
+  position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);cursor:pointer;
+  box-shadow:0 0 20px var(--oc-glow),inset 0 1px 0 rgba(255,255,255,0.06);}
+.outcome-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--oc-col),transparent);}
+.outcome-card:hover{transform:translateY(-6px);
+  box-shadow:0 18px 50px var(--oc-glow),0 0 0 1px var(--oc-col);background:var(--oc-bgh);}
+.outcome-card:focus{outline:2px solid var(--oc-col);outline-offset:3px;}
+.oc-icon{font-size:1.4rem;margin-bottom:10px;}
+.oc-name{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;
+  color:var(--oc-col);margin-bottom:8px;text-shadow:0 0 14px var(--oc-glow);}
+.oc-desc{font-size:0.72rem;color:var(--muted);line-height:1.55;}
+.oc1{--oc-col:#00d4ff;--oc-bg:rgba(0,212,255,0.07);--oc-bgh:rgba(0,212,255,0.14);--oc-glow:rgba(0,212,255,0.2);}
+.oc2{--oc-col:#00ff9d;--oc-bg:rgba(0,255,157,0.07);--oc-bgh:rgba(0,255,157,0.14);--oc-glow:rgba(0,255,157,0.2);}
+.oc3{--oc-col:#b97aff;--oc-bg:rgba(123,47,255,0.08);--oc-bgh:rgba(123,47,255,0.16);--oc-glow:rgba(123,47,255,0.22);}
+.oc4{--oc-col:#f7c948;--oc-bg:rgba(247,201,72,0.07);--oc-bgh:rgba(247,201,72,0.15);--oc-glow:rgba(247,201,72,0.22);}
+
+/* COMPARE */
+.compare-sec{padding:80px 80px;}
+.compare-table{max-width:800px;margin:0 auto;border:1px solid var(--border);overflow:hidden;}
+.cmp-header{display:grid;grid-template-columns:1fr 1fr;}
+.cmp-h{padding:18px 36px;font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;
+  letter-spacing:0.15em;text-align:center;}
+.cmp-h.left{background:rgba(255,255,255,0.04);border-right:1px solid var(--border);color:var(--muted);}
+.cmp-h.right{background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(123,47,255,0.12));color:var(--cyan);}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border);transition:background 0.3s;}
+.cmp-row:hover{background:rgba(255,255,255,0.02);}
+.cmp-cell{padding:16px 36px;font-size:0.88rem;display:flex;align-items:center;gap:12px;}
+.cmp-cell.left{border-right:1px solid var(--border);color:var(--muted);font-weight:400;}
+.cmp-cell.right{color:var(--text);font-weight:500;}
+.cmp-check{width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--cyan),var(--green));
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.62rem;color:var(--bg);font-weight:900;
+  box-shadow:0 0 12px rgba(0,212,255,0.4);}
+
+/* CTA */
+.cta-sec{padding:100px 80px;text-align:center;}
+.cta-box{max-width:680px;margin:0 auto;padding:60px 48px;
+  border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(20px);
+  position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(123,47,255,0.1),transparent 70%);pointer-events:none;}
+.cta-divider{display:flex;align-items:center;gap:16px;justify-content:center;margin-bottom:32px;}
+.cta-dl{flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan));}
+.cta-dl.r{background:linear-gradient(90deg,var(--cyan),transparent);}
+.cta-title{font-family:'Orbitron',monospace;font-size:clamp(1.1rem,2.3vw,1.75rem);font-weight:900;
+  background:linear-gradient(135deg,#fff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  position:relative;z-index:1;}
+.cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;margin-top:32px;}
+.btn-grd{padding:13px 28px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;color:#fff;font-family:'Orbitron',monospace;font-size:0.63rem;font-weight:700;
+  letter-spacing:0.13em;text-transform:uppercase;cursor:pointer;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  transition:all 0.3s;box-shadow:0 0 40px rgba(0,212,255,0.25);}
+.btn-grd:hover{box-shadow:0 0 60px rgba(0,212,255,0.55);transform:translateY(-2px);}
+.btn-ghost{padding:13px 28px;background:transparent;border:1px solid rgba(255,255,255,0.2);
+  color:var(--text);font-family:'Orbitron',monospace;font-size:0.63rem;font-weight:600;
+  letter-spacing:0.13em;text-transform:uppercase;cursor:pointer;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+  transition:all 0.3s;display:flex;align-items:center;gap:8px;}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);background:rgba(3,3,12,0.95);}
+.footer-tabs{display:grid;grid-template-columns:repeat(4,1fr);}
+.ft{padding:20px;text-align:center;border-right:1px solid var(--border);
+  font-family:'Orbitron',monospace;font-size:0.68rem;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);
+  cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;}
+.ft:last-child{border-right:none;}
+.ft:hover{color:var(--cyan);background:rgba(0,212,255,0.05);}
+.footer-bottom{padding:18px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.fl{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.fc{font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding:140px 24px 60px;}
+  .topbar,.mainnav{padding:12px 20px;gap:12px;}
+  .tb-tagline{display:none;}
+  .services-sec,.revenue-sec,.compare-sec,.cta-sec{padding:60px 24px;}
+  .svc-grid-r1{grid-template-columns:1fr 1fr;}
+  .svc-grid-r2{grid-template-columns:1fr 1fr;}
+  .rev-tabs{flex-direction:column;}
+  .footer-tabs{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-fx" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+</div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-icon">♾️</div>
+    <div>
+      <div class="tb-logo-text">ALLTIMEUPA<span class="tb-logo-sub">AI</span></div>
+    </div>
+  </div>
+  <p class="tb-tagline">ALLTIMEUPA builds a unified alt-driven partnership ecosystem — People, Public, Private, and Partnerships through intelligent advisory, structured integration, and scalable execution.</p>
+  <button class="tb-cta">Start SUA Advisory</button>
+</header>
+
+<!-- NAV -->
+<nav class="mainnav">
+  <a class="nav-item active" href="#hero">SUA ▾</a>
+  <a class="nav-item" href="#hero">PI Model</a>
+  <a class="nav-item" href="#hero">V2BASH</a>
+  <a class="nav-item" href="#services">Services</a>
+  <a class="nav-item" href="#contact">Contact</a>
+  <input class="nav-search" type="text" placeholder="Search…" aria-label="Search">
+</nav>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left reveal">
+    <h1 class="hero-title">ALLTA-Driven Global <span class="hl">AI</span> Partnership Ecosystem</h1>
+    <div class="hero-lines">
+      <div class="hl-bar" style="width:82%;background:linear-gradient(90deg,var(--cyan),transparent);"></div>
+      <div class="hl-bar" style="width:62%;background:linear-gradient(90deg,var(--purple),transparent);"></div>
+      <div class="hl-bar" style="width:42%;background:linear-gradient(90deg,var(--green),transparent);"></div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-o c">Start SUA Advisory</button>
+      <button class="btn-o p">Enter PI Ecosystem</button>
+      <button class="btn-o g">Apply for Partnership</button>
+    </div>
+  </div>
+
+  <!-- FLOW GRAPH -->
+  <div class="flow-graph reveal">
+
+    <div class="fg-node fn-s">
+      <div class="fn-lbl">Input Sources</div>
+      <div class="fn-title">Stakeholders</div>
+      <div class="fn-sub">Partner / User / Govt / Enterprise</div>
+    </div>
+    <div class="fg-conn">
+      <div class="fg-line" style="--lf:#9eafc8;--lt:#00d4ff;"></div>
+      <div class="fg-arr" style="--lt:#00d4ff;"></div>
+    </div>
+
+    <div class="fg-node fn-a">
+      <div class="fn-lbl">Brain Layer — 01</div>
+      <div class="fn-title">SUA Advisory</div>
+      <div class="fn-sub">Strategy + Goals</div>
+    </div>
+    <div class="fg-conn">
+      <div class="fg-line" style="--lf:#00d4ff;--lt:#b97aff;"></div>
+      <div class="fg-arr" style="--lt:#b97aff;"></div>
+    </div>
+
+    <div class="fg-node fn-p">
+      <div class="fn-lbl">Integration — 02</div>
+      <div class="fn-title">PI Model</div>
+      <div class="fn-sub">P2I &nbsp;/&nbsp; P3I &nbsp;/&nbsp; P4I</div>
+    </div>
+    <div class="fg-conn">
+      <div class="fg-line" style="--lf:#b97aff;--lt:#ff8a5b;"></div>
+      <div class="fg-arr" style="--lt:#ff8a5b;"></div>
+    </div>
+
+    <div class="fg-node fn-v">
+      <div class="fn-lbl">Execution Engine — 03</div>
+      <div class="fn-title">V2BASH</div>
+      <div class="fn-sub">Build → Automate → Scale → Hybridize</div>
+    </div>
+    <div class="fg-conn">
+      <div class="fg-line" style="--lf:#ff8a5b;--lt:#00ff9d;"></div>
+      <div class="fg-arr" style="--lt:#00ff9d;"></div>
+    </div>
+
+    <div class="fg-node fn-t">
+      <div class="fn-lbl">Service Layer — 04</div>
+      <div class="fn-title">altPA Services</div>
+      <div class="fn-sub">All 6 Service Layers</div>
+    </div>
+    <div class="fg-conn">
+      <div class="fg-line" style="--lf:#00ff9d;--lt:#f7c948;"></div>
+      <div class="fg-arr" style="--lt:#f7c948;"></div>
+    </div>
+
+    <div class="fg-node fn-l">
+      <div class="fn-lbl">Intelligence Core — 05</div>
+      <div class="fn-title">LOGGRID / AI∞PA</div>
+      <div class="fn-core">Core Engine</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="services-sec">
+  <div class="sec-head reveal">
+    <div class="sec-divider">
+      <div class="sdl"></div>
+      <div class="sec-tag">altPA Service Ecosystem</div>
+      <div class="sdl r"></div>
+    </div>
+    <h2 class="sec-title">Six Precision Service Layers</h2>
+  </div>
+
+  <div class="svc-grid-r1">
+    <div class="svc-card sc1 reveal" tabindex="0">
+      <div class="sc-name">advisory<em>PA</em></div>
+      <p class="sc-desc">AI & human-driven strategic intelligence — predictive insights, decision frameworks, and growth roadmaps aligned with enterprise vision.</p>
+      <div class="sc-num">01</div>
+    </div>
+    <div class="svc-card sc2 reveal" tabindex="0">
+      <div class="sc-name">consultancy<em>PA</em></div>
+      <p class="sc-desc">Execution-focused transformation — AI-powered systems, automation architectures, and scalable digital infrastructure.</p>
+      <div class="sc-num">02</div>
+    </div>
+    <div class="svc-card sc3 reveal" tabindex="0">
+      <div class="sc-name">contact<em>PA</em></div>
+      <p class="sc-desc">AI-enabled connection engine — identifies and activates high-value partnerships, clients, and strategic opportunities globally.</p>
+      <div class="sc-num">03</div>
+    </div>
+    <div class="svc-card sc4 reveal" tabindex="0">
+      <div class="sc-name">co&#8209;harid<em>PA</em></div>
+      <p class="sc-desc">Collaborative co-build service — joint innovation, product development, and shared growth through partner-integrated models.</p>
+      <div class="sc-num">04</div>
+    </div>
+  </div>
+
+  <div class="svc-grid-r2">
+    <div class="svc-card sc5 reveal" tabindex="0">
+      <div class="sc-name">bi<em>PA</em></div>
+      <p class="sc-desc">Real-time decision intelligence — enterprise data into predictive insights, automated reporting, and actionable outcomes.</p>
+      <div class="sc-num">05</div>
+    </div>
+    <div class="svc-card sc6 reveal" tabindex="0">
+      <div class="sc-name">coHybrid<em>PA</em></div>
+      <p class="sc-desc">AI-powered co-consultations and partnership co-ops enabling hybrid operational models across enterprise boundaries.</p>
+      <div class="sc-num">06</div>
+    </div>
+    <div class="svc-card sc7 reveal" tabindex="0">
+      <div class="sc-name">LOGGRID / AI∞<em>PA</em></div>
+      <p class="sc-desc">Unified cognitive automation platform — integrates systems and enables autonomous enterprise operations through AI agents.</p>
+      <div class="sc-core">Core Engine</div>
+      <div class="sc-num">∞</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE MODEL -->
+<section class="revenue-sec">
+  <div class="sec-head reveal">
+    <div class="sec-divider">
+      <div class="sdl"></div>
+      <div class="sec-tag">Revenue Model</div>
+      <div class="sdl r"></div>
+    </div>
+    <h2 class="sec-title">How We Generate Value</h2>
+  </div>
+
+  <!-- ROW 1: 3 revenue cards -->
+  <div class="rev-row1 reveal">
+    <div class="rev-card rvc1">
+      <div class="rvc-top">
+        <div class="rvc-icon">💼</div>
+        <div class="rvc-name">FTF</div>
+      </div>
+      <div class="rvc-full">Fixed Transaction Fee</div>
+      <p class="rvc-desc">A structured fee per engagement, transaction, or advisory session — transparent and aligned with value delivered.</p>
+    </div>
+    <div class="rev-card rvc2">
+      <div class="rvc-top">
+        <div class="rvc-icon">🔄</div>
+        <div class="rvc-name">Subscription</div>
+      </div>
+      <div class="rvc-full">Subscription Model</div>
+      <p class="rvc-desc">Recurring monthly or annual access to altPA service layers — continuous advisory, automation, and intelligence.</p>
+    </div>
+    <div class="rev-card rvc3">
+      <div class="rvc-top">
+        <div class="rvc-icon">⚙️</div>
+        <div class="rvc-name">Operating Revenue</div>
+      </div>
+      <div class="rvc-full">Operating Revenue</div>
+      <p class="rvc-desc">Revenue from active operational deployments — service execution, system management, and enterprise automation.</p>
+    </div>
+  </div>
+
+  <!-- OUTCOME-BASED SECTION — always visible -->
+  <div class="outcome-sec reveal">
+    <div class="outcome-sec-head">
+      <div class="outcome-badge">📈 Outcome-Based Revenue</div>
+      <p class="outcome-sub">Performance-linked revenue tied directly to real results — ALLTIMEUPA earns when partners grow.</p>
+    </div>
+    <div class="outcome-grid">
+      <div class="outcome-card oc1" tabindex="0">
+        <div class="oc-icon">🎯</div>
+        <div class="oc-name">Success Fee</div>
+        <p class="oc-desc">A fee triggered upon achieving defined milestones — deal closures, partnership activations, or revenue thresholds successfully reached.</p>
+      </div>
+      <div class="outcome-card oc2" tabindex="0">
+        <div class="oc-icon">✅</div>
+        <div class="oc-name">Outcome Fee</div>
+        <p class="oc-desc">Structured compensation tied to verified, measurable outputs — system deployments, growth targets, or automation outcomes confirmed at delivery.</p>
+      </div>
+      <div class="outcome-card oc3" tabindex="0">
+        <div class="oc-icon">📊</div>
+        <div class="oc-name">Revenue Share</div>
+        <p class="oc-desc">A percentage of generated revenue shared with ALLTIMEUPA — aligning long-term incentives between the ecosystem and its partners for mutual growth.</p>
+      </div>
+      <div class="outcome-card oc4" tabindex="0">
+        <div class="oc-icon">⚡</div>
+        <div class="oc-name">Symbol Equity</div>
+        <p class="oc-desc">A symbolic equity position offered in exchange for ALLTIMEUPA's strategic contribution — enabling co-ownership of value created through the partnership.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Partner Growth -->
+  <div class="rev-row2 reveal">
+    <div class="rev-card rvc5" style="max-width:480px;margin:0 auto;">
+      <div class="rvc-top">
+        <div class="rvc-icon">🚀</div>
+        <div class="rvc-name">Partner Growth</div>
+      </div>
+      <div class="rvc-full">Partner Growth Revenue</div>
+      <p class="rvc-desc">Revenue streams built jointly with partners — co-created products, shared ventures, and growth-linked compensation that scales as the partner scales.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- COMPARISON -->
+<section class="compare-sec">
+  <div class="sec-head reveal"><h2 class="sec-title">Why ALLTIMEUPA?</h2></div>
+  <div class="compare-table reveal">
+    <div class="cmp-header">
+      <div class="cmp-h left">Traditional</div>
+      <div class="cmp-h right">ALLTIMEUPA</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell left">SaaS Tools</div>
+      <div class="cmp-cell right"><div class="cmp-check">✓</div>SUA Ecosystem</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell left">Isolated</div>
+      <div class="cmp-cell right"><div class="cmp-check">✓</div>Integrated</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-cell left">Static</div>
+      <div class="cmp-cell right"><div class="cmp-check">✓</div>Dynamic</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta-sec">
+  <div class="cta-box reveal">
+    <div class="cta-divider">
+      <div class="cta-dl"></div>
+      <h2 class="cta-title">Start Your AI Transformation Journey</h2>
+      <div class="cta-dl r"></div>
+    </div>
+    <div class="cta-btns">
+      <button class="btn-grd">Start SUA Advisory</button>
+      <button class="btn-ghost">Apply for Partnership <span>›</span></button>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-tabs">
+    <a class="ft" href="#hero">About</a>
+    <a class="ft" href="#services">Services</a>
+    <a class="ft" href="#contact">Partnerships</a>
+    <a class="ft" href="#contact">Contact</a>
+  </div>
+  <div class="footer-bottom">
+    <div class="fl">ALLTIMEUPA CORP</div>
+    <div class="fc">© 2025 ALLTIMEUPA CORP — altPA Services. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// Reveal on scroll
+const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Revenue tab
+document.querySelectorAll('.rev-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.rev-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const tab = t.dataset.tab;
+    document.querySelectorAll('.rev-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.getElementById('panel-' + tab);
+    if(panel) panel.classList.add('active');
+  });
+  t.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();t.click();} });
+});
+
+// 3D tilt cards
+document.querySelectorAll('.svc-card').forEach(c => {
+  c.addEventListener('mousemove', e => {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width-0.5, y = (e.clientY-r.top)/r.height-0.5;
+    c.style.transform = `translateY(-7px) rotateX(${-y*6}deg) rotateY(${x*6}deg)`;
+    c.style.transition = 'box-shadow 0.2s,border-color 0.2s';
+  });
+  c.addEventListener('mouseleave', () => { c.style.transform=''; c.style.transition='all 0.4s'; });
+});
+</script>
+</body>
+</html>
